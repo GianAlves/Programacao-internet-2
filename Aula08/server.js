@@ -11,7 +11,7 @@ servidor.use(restify.plugins.queryParser());
 servidor.use(restify.plugins.bodyParser());
 
 servidor.listen(8001, function() {
-    console.log("%s executando em %s", servidor.name, servidor.url);
+    console.log("%s executando em %s", servidor.name, servidor, servidor.url);
 });
 
 var knex = require('knex')({
@@ -19,53 +19,55 @@ var knex = require('knex')({
     connection: {
         host: 'localhost',
         user: 'root',
-        password: '',
+        password: 'usbw',
         database: 'api_rest'
     }
-});
+})
 
 servidor.get('/', (req, res, next) => {
-    knex('tbl_produtos').then((dados) => {
-        res.send(dados);
+    knex('tbl_produtos').then((dados) =>{
+        res.send( dados )
     }, next);
 });
+
 servidor.get('/produtos', (req, res, next) => {
-    knex('tbl_produtos').then((dados) => {
-        res.send(dados);
+    knex('tbl_produtos').then((dados) =>{
+        res.send( dados )
     }, next);
 });
 
 servidor.post('/produtos/add', (req, res, next) => {
+    console.log( "Log: " + JSON.stringify(req.body) );
     knex('tbl_produtos')
-        .insert(req.body)
-        .then((dados) => {
-            res.send(dados);
+        .insert( req.body )
+        .then((dados) =>{
+            res.send( dados )
         }, next);
 });
 
 servidor.get('/produtos/:id', (req, res, next) => {
     const id = req.params.id;
     knex('tbl_produtos')
-        .where('id', id)
+        .where( 'id', id)
         .first()
-        .then((dados) => {
-            if (!dados) {
-                return res.send(new errors.BadRequestError('Este produto não foi encontrado'));
+        .then((dados) =>{
+            if(!dados){
+                return res.send(new errors.BadRequestError('Este produto não foi encontrado.'))
             }
-            res.send(dados);
-        }, next);
+            res.send( dados )
+    }, next);
 });
 
 servidor.put('/produtos/update/:id', (req, res, next) => {
     const id = req.params.id;
     knex('tbl_produtos')
         .where('id', id)
-        .update(req.body)
-        .then((dados) => {
-            if (!dados) {
-                return res.send(new errors.BadRequestError('Este produto não foi encontrado'));
+        .update (req.body)
+        .then((dados) =>{
+            if(!dados){
+                return res.send(new errors.BadRequestError('Este produto não foi encontrado.'))
             }
-            res.send(dados);
+            res.send( dados )
         }, next);
 });
 
@@ -74,10 +76,10 @@ servidor.del('/produtos/delete/:id', (req, res, next) => {
     knex('tbl_produtos')
         .where('id', id)
         .delete()
-        .then((dados) => {
-            if (!dados) {
-                return res.send(new errors.BadRequestError('Este produto não foi encontrado'));
+        .then((dados) =>{
+            if(!dados){
+                return res.send(new errors.BadRequestError('Este produto não foi encontrado.'))
             }
-            res.send(dados);
+            res.send( dados )
         }, next);
 });
